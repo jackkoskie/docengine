@@ -4,8 +4,6 @@ Docs-as-code for policy documents. Write Markdown with bracketed provision IDs, 
 
 New here? Start with [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
 
-Maintainers: see [docs/RELEASING.md](docs/RELEASING.md) before publishing packages or the editor extension.
-
 Looking for an example of this being used? See how the CZQM FIR manages their policies: [https://github.com/CZQM-FIR/policies](https://github.com/CZQM-FIR/policies)
 
 ## Layout

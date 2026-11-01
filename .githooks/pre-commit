@@ -1,0 +1,30 @@
+#!/bin/sh
+# docengine pre-commit hook: formatting and git-aware checks for staged policy documents.
+#
+# Install once per clone:   git config core.hooksPath .githooks
+# (make it executable:      chmod +x .githooks/pre-commit)
+#
+# Skip for one commit:      git commit --no-verify
+# Compare against a base:   DOCENGINE_BASE=origin/main git commit ...
+
+if ! git diff --cached --name-only | grep -Eq '\.(md|svg|png|jpe?g)$|docengine\.config\.'; then
+  exit 0
+fi
+
+if command -v docengine >/dev/null 2>&1; then
+  DOCENGINE="docengine"
+else
+  DOCENGINE="pnpm exec docengine"
+fi
+
+$DOCENGINE fmt --check || {
+  echo "docengine: formatting needed. Run \`docengine fmt\` and stage the result." >&2
+  exit 1
+}
+
+if [ -n "$DOCENGINE_BASE" ]; then
+  $DOCENGINE check --base "$DOCENGINE_BASE"
+else
+  # Without --base, documents are compared with their last release tag.
+  $DOCENGINE check
+fi

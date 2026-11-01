@@ -1,0 +1,20 @@
+# Replace the v1 placeholder with an actual released tag or commit SHA, including engine-ref.
+name: PR preview prune
+
+on:
+  schedule:
+    - cron: "17 4 * * 1" # weekly, Monday 04:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prune:
+    uses: jackkoskie/docengine/.github/workflows/pr-preview-prune.yml@v1
+    with:
+      engine-repository: jackkoskie/docengine
+      engine-ref: v1
+    permissions:
+      contents: write
+      pull-requests: read

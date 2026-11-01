@@ -1,0 +1,27 @@
+{
+  "name": "docengine-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MPL-2.0",
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b && tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:golden": "vitest run packages/cli/test/golden.test.ts",
+    "schema": "node packages/cli/dist/bin.js schema --out schema/frontmatter.schema.json",
+    "sample": "node packages/cli/dist/bin.js build --cwd fixtures/sample-repo",
+    "licenses:check": "node scripts/check-licenses.mjs"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

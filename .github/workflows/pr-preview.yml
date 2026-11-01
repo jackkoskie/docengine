@@ -1,0 +1,88 @@
+# Reusable workflow (untrusted side of the PR preview).
+# Runs on pull_request, including fork PRs, with a read-only token and no secrets.
+# It builds and uploads an artifact. Publishing happens in pr-preview-publish.yml.
+name: docengine PR preview (build)
+
+on:
+  workflow_call:
+    inputs:
+      engine-repository:
+        description: Repository that hosts the docengine action, for example your-org/docengine.
+        type: string
+        required: true
+      engine-ref:
+        description: Tag or commit of the docengine repository to use.
+        type: string
+        required: true
+      working-directory:
+        type: string
+        default: "."
+      typst-version:
+        type: string
+        default: "0.15.1"
+      node-version:
+        type: string
+        default: "22"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build changed documents
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # Distinct from the caller's `preview-<pr>` group: identical names in caller and callee deadlock.
+    concurrency:
+      group: docengine-build-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.engine-repository }}
+          ref: ${{ inputs.engine-ref }}
+          path: .docengine-action
+          sparse-checkout: action
+          persist-credentials: false
+
+      - name: Keep the action checkout out of git status
+        shell: bash
+        run: echo ".docengine-action/" >> .git/info/exclude
+
+      - name: Check and build preview
+        id: preview
+        uses: ./.docengine-action/action
+        with:
+          mode: preview
+          working-directory: ${{ inputs.working-directory }}
+          typst-version: ${{ inputs.typst-version }}
+          node-version: ${{ inputs.node-version }}
+          pr-number: ${{ github.event.pull_request.number }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
+
+      # Everything below runs even when the build failed, so the publish job can report the failure.
+      - name: Upload preview report (consumed by the publish workflow)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docengine-preview
+          path: ${{ inputs.working-directory }}/docengine-preview
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload build output (backup for reviewers)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docengine-dist
+          path: ${{ inputs.working-directory }}/dist
+          if-no-files-found: ignore
+          retention-days: 14

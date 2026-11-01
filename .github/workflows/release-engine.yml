@@ -1,0 +1,86 @@
+# Manual engine release. Configure npm and Marketplace access before publishing.
+name: Release engine (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, for example 0.2.0. Must match packages/*/package.json."
+        required: true
+        type: string
+      publish-npm:
+        description: Publish to npm. Leave off for a dry run.
+        type: boolean
+        default: false
+      github-release:
+        description: Create the GitHub Release and attach the .vsix (if built).
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # GitHub Release
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+      - name: Check package versions match the requested version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Invalid release version"; exit 1
+          fi
+          for f in packages/*/package.json; do
+            v=$(node -p "require('./$f').version")
+            if [ "$v" != "$VERSION" ]; then echo "::error file=$f::version $v does not match $VERSION"; exit 1; fi
+          done
+
+      - name: Publish to npm
+        if: inputs.publish-npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # only needed for engine releases, never for docs repos
+        run: pnpm -r publish --access public --provenance --no-git-checks
+
+      - name: Dry-run publish
+        if: ${{ !inputs.publish-npm }}
+        run: pnpm -r publish --dry-run --no-git-checks
+
+      - name: Build .vsix
+        id: vsix
+        if: hashFiles('packages/vscode/package.json') != ''
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          pnpm --filter docengine-vscode package
+          cp packages/vscode/dist/docengine.vsix "docengine-${VERSION}.vsix"
+          echo "built=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: inputs.github-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          files=()
+          if [ "${{ steps.vsix.outputs.built }}" = "true" ]; then files+=("docengine-${VERSION}.vsix"); fi
+          gh release create "v${VERSION}" "${files[@]}" --title "docengine v${VERSION}" --generate-notes

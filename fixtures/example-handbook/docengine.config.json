@@ -1,0 +1,17 @@
+{
+  "branding": {
+    "firName": "Exampleland FIR",
+    "footer": "Exampleland FIR Policy Library",
+    "colors": { "highlight": "#ffe066" }
+  },
+  "cover": {
+    "firName": "Exampleland FIR",
+    "logo": "assets/example-logo.svg",
+    "notice": "For Example Use Only"
+  },
+  "toc": { "depth": 2 },
+  "extensions": {
+    "required": "boolean",
+    "public?": "boolean"
+  }
+}

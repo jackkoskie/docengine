@@ -1,0 +1,11 @@
+{
+  "branding": {
+    "firName": "Exampleland FIR",
+    "footer": "Exampleland FIR Policy Library"
+  },
+  "cover": { "enabled": false },
+  "extensions": {
+    "required": "boolean",
+    "public?": "boolean"
+  }
+}

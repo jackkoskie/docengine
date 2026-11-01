@@ -1,0 +1,11 @@
+docengine
+Copyright (c) 2026 Jack Koskie
+
+This product is licensed under the Mozilla Public License, v. 2.0 (see LICENSE).
+This Source Code Form is subject to the terms of the Mozilla Public License,
+v. 2.0. If a copy of the MPL was not distributed with this file, You can
+obtain one at https://mozilla.org/MPL/2.0/.
+
+Exceptions: the files under templates/ and template-repo/ are licensed under
+the MIT License; see templates/LICENSE and template-repo/LICENSE. The npm
+package "@jackkoskie/docengine" bundles a copy of templates/, which remains MIT.

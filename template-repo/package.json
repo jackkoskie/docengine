@@ -1,0 +1,15 @@
+{
+  "name": "my-fir-policies",
+  "private": true,
+  "license": "MIT",
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "validate": "docengine validate",
+    "build": "docengine build"
+  },
+  "devDependencies": {
+    "@jackkoskie/docengine": "file:../packages/cli"
+  }
+}

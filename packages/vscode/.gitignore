@@ -1,0 +1,6 @@
+out/
+dist/
+schema/
+LICENSE
+NOTICE
+*.vsix

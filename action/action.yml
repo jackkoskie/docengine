@@ -1,0 +1,145 @@
+name: docengine
+description: Validate, preview and release policy documents built with docengine (Markdown to Typst PDFs).
+author: docengine
+
+inputs:
+  mode:
+    description: "check (validate + version-bump check), preview (build changed documents and write a report folder), or release (create one GitHub Release per changed non-draft document)."
+    required: true
+  working-directory:
+    description: Directory of the documents repo (contains package.json and pnpm-lock.yaml).
+    default: "."
+  base-ref:
+    description: "Git ref to compare against. Empty means: PR merge base for pull_request events, the previous head for push events, otherwise HEAD~1."
+    default: ""
+  node-version:
+    description: Node.js version.
+    default: "22"
+  pnpm-version:
+    description: pnpm version. Empty reads the packageManager field of package.json.
+    default: ""
+  typst-version:
+    description: Pinned Typst version. Pin it here, or in the calling workflow, so builds are reproducible.
+    default: "0.15.1"
+  typst-sha256:
+    description: Optional SHA-256 of the Typst archive for the runner platform. Verified when set.
+    default: ""
+  docengine-command:
+    description: Command that runs the docengine pinned in the consuming repo lockfile.
+    default: "pnpm exec docengine"
+  output-dir:
+    description: Build output directory, relative to working-directory.
+    default: "dist"
+  report-dir:
+    description: "Preview mode: folder that receives report.json, pdfs/ and diff files (upload it as the artifact)."
+    default: "docengine-preview"
+  pr-number:
+    description: "Preview mode: pull request number recorded in the report."
+    default: ${{ github.event.pull_request.number }}
+  head-sha:
+    description: "Preview mode: PR head commit recorded in the report."
+    default: ${{ github.event.pull_request.head.sha }}
+  github-token:
+    description: "Release mode only: token with contents:write and pull-requests:read."
+    default: ""
+
+outputs:
+  base-ref:
+    description: The resolved comparison base.
+    value: ${{ steps.base.outputs.base }}
+  status:
+    description: "success or failure (check and preview modes)."
+    value: ${{ steps.run-check.outputs.status || steps.run-preview.outputs.status }}
+  has-changes:
+    description: "preview mode: true when at least one document was built."
+    value: ${{ steps.run-preview.outputs.has-changes }}
+  changed-documents:
+    description: "JSON array of group/short for changed documents (preview and release modes)."
+    value: ${{ steps.run-preview.outputs.changed-documents || steps.run-release.outputs.changed-documents }}
+  report-path:
+    description: "preview mode: absolute path of the report folder."
+    value: ${{ steps.run-preview.outputs.report-path }}
+  release-tags:
+    description: "release mode: JSON array of tags that were created."
+    value: ${{ steps.run-release.outputs.release-tags }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate mode
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+      run: |
+        case "$MODE" in check|preview|release) ;; *) echo "::error::mode must be check, preview or release (got '$MODE')"; exit 1 ;; esac
+
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+        package_json_file: ${{ inputs.working-directory }}/package.json
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - name: Install Typst ${{ inputs.typst-version }}
+      shell: bash
+      run: bash "${{ github.action_path }}/scripts/install-typst.sh" "${{ inputs.typst-version }}" "${{ inputs.typst-sha256 }}"
+
+    - name: Install dependencies (docengine version comes from the lockfile)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Resolve comparison base
+      id: base
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DOCENGINE_CWD: .
+        DOCENGINE_BASE: ${{ inputs.base-ref }}
+        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        EVENT_BEFORE: ${{ github.event.before }}
+      run: node "${{ github.action_path }}/scripts/main.mjs" resolve-base
+
+    - name: Check
+      id: run-check
+      if: inputs.mode == 'check'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DOCENGINE_CWD: .
+        DOCENGINE_COMMAND: ${{ inputs.docengine-command }}
+        DOCENGINE_BASE: ${{ steps.base.outputs.base }}
+      run: node "${{ github.action_path }}/scripts/main.mjs" check
+
+    - name: Build preview
+      id: run-preview
+      if: inputs.mode == 'preview'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DOCENGINE_CWD: .
+        DOCENGINE_COMMAND: ${{ inputs.docengine-command }}
+        DOCENGINE_BASE: ${{ steps.base.outputs.base }}
+        DOCENGINE_OUT_DIR: ${{ inputs.output-dir }}
+        DOCENGINE_REPORT_DIR: ${{ inputs.report-dir }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+      run: node "${{ github.action_path }}/scripts/main.mjs" preview-build
+
+    - name: Create releases
+      id: run-release
+      if: inputs.mode == 'release'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DOCENGINE_CWD: .
+        DOCENGINE_COMMAND: ${{ inputs.docengine-command }}
+        DOCENGINE_BASE: ${{ steps.base.outputs.base }}
+        DOCENGINE_OUT_DIR: ${{ inputs.output-dir }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: node "${{ github.action_path }}/scripts/main.mjs" release

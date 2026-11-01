@@ -1,0 +1,24 @@
+# Replace the v1 placeholder with an actual released tag or commit SHA, including engine-ref.
+name: PR preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+# The newest push to a PR always wins.
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    uses: jackkoskie/docengine/.github/workflows/pr-preview.yml@v1
+    with:
+      engine-repository: jackkoskie/docengine
+      engine-ref: v1
+      # typst-version: "0.13.1"
+    permissions:
+      contents: read

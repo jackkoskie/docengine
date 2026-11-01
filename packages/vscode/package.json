@@ -1,0 +1,168 @@
+{
+  "name": "docengine-vscode",
+  "private": true,
+  "displayName": "docengine",
+  "description": "Authoring support for docengine policy documents: diagnostics, completion, hover, navigation, rename and PDF preview.",
+  "version": "0.1.0",
+  "publisher": "your-publisher-id",
+  "license": "MPL-2.0",
+  "repository": { "type": "git", "url": "https://github.com/jackkoskie/docengine.git", "directory": "packages/vscode" },
+  "type": "module",
+  "main": "./dist/extension.cjs",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Snippets"
+  ],
+  "keywords": [
+    "docengine",
+    "policy",
+    "markdown",
+    "docs-as-code"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/docengine.config.*",
+    "workspaceContains:documents/**/*.md"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "docengine.buildPreview",
+        "title": "Build PDF preview",
+        "category": "docengine"
+      },
+      {
+        "command": "docengine.validateWorkspace",
+        "title": "Validate workspace",
+        "category": "docengine"
+      },
+      {
+        "command": "docengine.insertSchemaModeline",
+        "title": "Insert frontmatter schema modeline",
+        "category": "docengine"
+      }
+    ],
+    "configuration": {
+      "title": "docengine",
+      "properties": {
+        "docengine.cli.command": {
+          "type": "string",
+          "default": "docengine",
+          "description": "Command used to run the docengine CLI for PDF previews (for example `pnpm exec docengine` or an absolute path)."
+        },
+        "docengine.validation.debounceMs": {
+          "type": "number",
+          "default": 150,
+          "minimum": 0,
+          "description": "Delay in milliseconds between the last edit and re-validation."
+        },
+        "docengine.documents": {
+          "type": "string",
+          "default": "",
+          "description": "Glob (relative to the workspace folder) of document files. Empty means use the `documents` setting of docengine.config, or documents/**/*.md."
+        }
+      }
+    },
+    "snippets": [
+      {
+        "language": "markdown",
+        "path": "./snippets/docengine.code-snippets"
+      }
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "docenginePart",
+        "superType": "namespace",
+        "description": "Provision ID at level 1 (Part)"
+      },
+      {
+        "id": "docengineSubpart",
+        "superType": "type",
+        "description": "Provision ID at level 2 (Subpart)"
+      },
+      {
+        "id": "docengineSection",
+        "superType": "class",
+        "description": "Provision ID at level 3 (Section)"
+      },
+      {
+        "id": "docengineSubsection",
+        "superType": "interface",
+        "description": "Provision ID at level 4 (Subsection)"
+      },
+      {
+        "id": "docengineParagraph",
+        "superType": "function",
+        "description": "Provision ID at level 5 (Paragraph)"
+      },
+      {
+        "id": "docengineSubparagraph",
+        "superType": "method",
+        "description": "Provision ID at level 6 (Subparagraph)"
+      },
+      {
+        "id": "docengineClause",
+        "superType": "variable",
+        "description": "Provision ID at level 7 (Clause)"
+      },
+      {
+        "id": "docengineSubclause",
+        "superType": "parameter",
+        "description": "Provision ID at level 8 (Subclause)"
+      },
+      {
+        "id": "docengineFigure",
+        "superType": "enumMember",
+        "description": "Figure key"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "markdown",
+        "scopes": {
+          "docenginePart": [
+            "entity.name.namespace.docengine"
+          ],
+          "docengineSubpart": [
+            "entity.name.type.docengine"
+          ],
+          "docengineSection": [
+            "entity.name.class.docengine"
+          ],
+          "docengineSubsection": [
+            "entity.name.interface.docengine"
+          ],
+          "docengineParagraph": [
+            "entity.name.function.docengine"
+          ],
+          "docengineSubparagraph": [
+            "entity.name.method.docengine"
+          ],
+          "docengineClause": [
+            "variable.other.docengine"
+          ],
+          "docengineSubclause": [
+            "variable.parameter.docengine"
+          ],
+          "docengineFigure": [
+            "constant.other.docengine"
+          ]
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "package": "node scripts/build.mjs && vsce package --no-dependencies --skip-license --allow-missing-repository --out dist/docengine.vsix"
+  },
+  "devDependencies": {
+    "@jackkoskie/docengine-core": "workspace:*",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0"
+  }
+}

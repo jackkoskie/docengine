@@ -1,0 +1,25 @@
+# Replace the v1 placeholder with an actual released tag or commit SHA, including engine-ref.
+# Trusted publish step. Runs after "PR preview" finishes, in the base repository, with write access.
+# It never checks out pull request code. Fork PRs are safe because of this split.
+name: PR preview publish
+
+on:
+  workflow_run:
+    workflows: ["PR preview"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.event.workflow_run.event == 'pull_request'
+    uses: jackkoskie/docengine/.github/workflows/pr-preview-publish.yml@v1
+    with:
+      engine-repository: jackkoskie/docengine
+      engine-ref: v1
+    permissions:
+      contents: write
+      pull-requests: write
+      statuses: write
+      actions: read

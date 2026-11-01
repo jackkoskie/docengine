@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="160" viewBox="0 0 400 160">
+  <rect x="10" y="10" width="170" height="140" fill="#e8eef6" stroke="#1f3a5f"/>
+  <rect x="220" y="10" width="170" height="140" fill="#f6efe8" stroke="#1f3a5f"/>
+  <text x="95" y="85" font-size="16" text-anchor="middle" fill="#1f3a5f">Sector A</text>
+  <text x="305" y="85" font-size="16" text-anchor="middle" fill="#1f3a5f">Sector B</text>
+  <path d="M150 130 L250 30" stroke="#1f3a5f" stroke-width="3" fill="none"/>
+</svg>

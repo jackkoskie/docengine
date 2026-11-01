@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": { "@jackkoskie/docengine-core": ["./packages/core/src/index.ts"] }
+  },
+  "include": ["packages/*/test/**/*.ts", "vitest.config.ts"]
+}

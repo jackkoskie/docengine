@@ -1,0 +1,19 @@
+# Replace the v1 placeholder with an actual released tag or commit SHA, including engine-ref.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    uses: jackkoskie/docengine/.github/workflows/release.yml@v1
+    with:
+      engine-repository: jackkoskie/docengine
+      engine-ref: v1
+    permissions:
+      contents: write
+      pull-requests: read

@@ -1,0 +1,14 @@
+[
+  {
+    "key": "operations/departure-release",
+    "group": "operations",
+    "short": "departure-release",
+    "title": "Departure Release (DR) Authority",
+    "file": "documents/operations/departure-release.md",
+    "version": "1.1",
+    "previousVersion": "1.0",
+    "effectiveDate": "2023-06-06",
+    "tag": "operations/departure-release/v1.1",
+    "draft": false
+  }
+]

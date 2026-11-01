@@ -1,0 +1,10 @@
+{
+  "branding": {
+    "firName": "Sample Flight Information Region",
+    "footer": "Sample FIR Policy Library"
+  },
+  "extensions": {
+    "required": "boolean",
+    "public?": "boolean"
+  }
+}

@@ -1,0 +1,10 @@
+# Optional alternative to .githooks/pre-commit, for repos that use lefthook (https://lefthook.dev).
+# Install with `lefthook install`.
+pre-commit:
+  commands:
+    docengine-fmt:
+      glob: "*.{md,svg,png,jpg,jpeg}"
+      run: pnpm exec docengine fmt --check
+    docengine-check:
+      glob: "*.{md,svg,png,jpg,jpeg}"
+      run: pnpm exec docengine check

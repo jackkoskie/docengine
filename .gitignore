@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.tsbuildinfo
+packages/cli/templates/
+packages/cli/LICENSE
+packages/cli/NOTICE
+packages/core/LICENSE
+packages/core/NOTICE
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+coverage/
+*.vsix
+Thumbs.db

@@ -1,0 +1,48 @@
+# Reusable workflow: delete pr-<n>/ from the previews branch when a PR closes.
+# Call it from a `pull_request_target: [closed]` workflow. It never checks out PR code.
+name: docengine PR preview (cleanup)
+
+on:
+  workflow_call:
+    inputs:
+      engine-repository:
+        type: string
+        required: true
+      engine-ref:
+        type: string
+        required: true
+      previews-branch:
+        type: string
+        default: previews
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # delete files on the previews branch
+      pull-requests: write # update the sticky comment
+    concurrency:
+      group: docengine-publish-cleanup-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.engine-repository }}
+          ref: ${{ inputs.engine-ref }}
+          path: .docengine-action
+          sparse-checkout: action
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Remove preview files
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PREVIEWS_BRANCH: ${{ inputs.previews-branch }}
+        run: node .docengine-action/action/scripts/main.mjs preview-cleanup

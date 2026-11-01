@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260" font-family="sans-serif" font-size="14">
+  <rect width="600" height="260" fill="#ffffff"/>
+  <g fill="#e8f0fa" stroke="#33475b">
+    <rect x="220" y="10" width="160" height="44" rx="8"/>
+    <rect x="20" y="120" width="150" height="44" rx="8"/>
+    <rect x="225" y="120" width="150" height="44" rx="8"/>
+    <rect x="430" y="120" width="150" height="44" rx="8"/>
+    <rect x="20" y="206" width="150" height="40" rx="8"/>
+    <rect x="225" y="206" width="150" height="40" rx="8"/>
+  </g>
+  <g stroke="#33475b" stroke-width="2" fill="none">
+    <path d="M300 54 V87 M95 87 H505 M95 87 V120 M300 87 V120 M505 87 V120 M95 164 V206 M300 164 V206"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="300" y="38">FIR Lead</text>
+    <text x="95" y="147">Training Lead</text>
+    <text x="300" y="147">Operations Lead</text>
+    <text x="505" y="147">Tools Lead</text>
+    <text x="95" y="231">Mentors</text>
+    <text x="300" y="231">Event Team</text>
+  </g>
+</svg>

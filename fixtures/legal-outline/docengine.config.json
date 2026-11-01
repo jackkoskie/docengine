@@ -1,0 +1,8 @@
+{
+  "numbering": "legal",
+  "cover": { "enabled": false },
+  "branding": {
+    "firName": "Example Court",
+    "footer": "Example Court"
+  }
+}

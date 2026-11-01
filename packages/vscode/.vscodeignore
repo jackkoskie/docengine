@@ -1,0 +1,8 @@
+**
+!dist/extension.cjs
+!snippets/**
+!schema/**
+!package.json
+!README.md
+!LICENSE
+!NOTICE

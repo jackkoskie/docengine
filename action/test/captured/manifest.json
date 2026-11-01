@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "generator": {
+    "name": "docengine",
+    "version": "0.1.0"
+  },
+  "gitCommit": "940395a9ebc1b396da79f05c3c2b4a76791ab357",
+  "documents": [
+    {
+      "group": "operations",
+      "short": "departure-release",
+      "title": "Departure Release (DR) Authority",
+      "version": "1.1",
+      "effectiveDate": "2023-06-06",
+      "expiryDate": null,
+      "description": "When departure release is granted automatically and when it must be coordinated.",
+      "draft": false,
+      "extensions": {
+        "required": true,
+        "public": true
+      },
+      "source": "documents/operations/departure-release.md",
+      "pdf": {
+        "filename": "departure-release-v1.1.pdf",
+        "path": "dist/operations/departure-release-v1.1.pdf",
+        "sha256": "9101b56dc68ee9026bfe2062f4c800610dda0e2b7c7685f1a8988337fd45fb70"
+      },
+      "gitCommit": "940395a9ebc1b396da79f05c3c2b4a76791ab357",
+      "changed": true,
+      "provisions": [
+        {
+          "id": "200.01",
+          "depth": 3,
+          "level": "Section",
+          "line": 13,
+          "repealed": false,
+          "title": "ZXAA Airport"
+        },
+        {
+          "id": "200.01(1)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 18,
+          "repealed": false
+        },
+        {
+          "id": "200.01(2)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 20,
+          "repealed": false
+        },
+        {
+          "id": "200.01(3)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 22,
+          "repealed": false
+        },
+        {
+          "id": "200.01(4)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 24,
+          "repealed": false
+        },
+        {
+          "id": "200.01(4)(a)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 26,
+          "repealed": false
+        },
+        {
+          "id": "200.01(4)(b)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 28,
+          "repealed": false
+        },
+        {
+          "id": "200.01(5)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 30,
+          "repealed": false
+        },
+        {
+          "id": "200.01(5)(a)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 32,
+          "repealed": false
+        },
+        {
+          "id": "200.01(5)(b)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 34,
+          "repealed": false
+        },
+        {
+          "id": "200.01(5)(c)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 36,
+          "repealed": false
+        },
+        {
+          "id": "200.01(5)(d)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 38,
+          "repealed": false
+        },
+        {
+          "id": "200.02",
+          "depth": 3,
+          "level": "Section",
+          "line": 40,
+          "repealed": false,
+          "title": "All other ZXEX Airports"
+        },
+        {
+          "id": "200.02(1)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 42,
+          "repealed": false
+        },
+        {
+          "id": "200.02(2)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 44,
+          "repealed": false
+        },
+        {
+          "id": "200.02(3)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 46,
+          "repealed": false
+        },
+        {
+          "id": "200.02(4)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 48,
+          "repealed": false
+        },
+        {
+          "id": "200.02(4)(a)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 50,
+          "repealed": false
+        },
+        {
+          "id": "200.02(4)(b)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 52,
+          "repealed": false
+        },
+        {
+          "id": "200.02(5)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 54,
+          "repealed": false
+        },
+        {
+          "id": "200.02(6)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 56,
+          "repealed": false
+        },
+        {
+          "id": "200.02(6)(a)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 58,
+          "repealed": false
+        },
+        {
+          "id": "200.02(6)(b)",
+          "depth": 5,
+          "level": "Paragraph",
+          "line": 60,
+          "repealed": false
+        },
+        {
+          "id": "200.03",
+          "depth": 3,
+          "level": "Section",
+          "line": 62,
+          "repealed": false,
+          "title": "Exceptions"
+        },
+        {
+          "id": "200.03(1)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 64,
+          "repealed": false
+        },
+        {
+          "id": "200.03(2)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 66,
+          "repealed": true
+        },
+        {
+          "id": "200.03(3)",
+          "depth": 4,
+          "level": "Subsection",
+          "line": 68,
+          "repealed": false
+        }
+      ],
+      "figures": [
+        {
+          "key": "example-logo",
+          "number": 1,
+          "caption": "Example FIR logo",
+          "path": "images/example-logo.svg",
+          "source": "documents/operations/images/example-logo.svg",
+          "sha256": "1dae13966a1a5f0ae69fbd99a256d3c649226419f7c17f0ca386cf853e5b3288"
+        }
+      ]
+    }
+  ]
+}

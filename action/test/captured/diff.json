@@ -1,0 +1,37 @@
+{
+  "base": "HEAD",
+  "documents": [
+    {
+      "group": "operations",
+      "short": "departure-release",
+      "key": "operations/departure-release",
+      "title": "Departure Release (DR) Authority",
+      "file": "documents/operations/departure-release.md",
+      "draft": false,
+      "isNew": false,
+      "against": "HEAD",
+      "version": {
+        "from": "1.0",
+        "to": "1.1"
+      },
+      "provisions": {
+        "added": [],
+        "changed": [
+          {
+            "id": "200.01(1)",
+            "excerpt": "Departure release (DR) is automatically issued once confirmation of the active runway is communicat…"
+          }
+        ],
+        "repealed": [],
+        "removed": [],
+        "moved": []
+      },
+      "figures": {
+        "added": [],
+        "changed": [],
+        "removed": [],
+        "renumbered": []
+      }
+    }
+  ]
+}

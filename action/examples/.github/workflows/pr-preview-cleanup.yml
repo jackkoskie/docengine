@@ -1,0 +1,20 @@
+# Replace the v1 placeholder with an actual released tag or commit SHA, including engine-ref.
+# pull_request_target runs in the base repository context. This job never checks out PR code.
+name: PR preview cleanup
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    uses: jackkoskie/docengine/.github/workflows/pr-preview-cleanup.yml@v1
+    with:
+      engine-repository: jackkoskie/docengine
+      engine-ref: v1
+    permissions:
+      contents: write
+      pull-requests: write

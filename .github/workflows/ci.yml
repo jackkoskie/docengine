@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Typst
+        run: bash action/scripts/install-typst.sh 0.15.1
+
+      - name: Dependency license check
+        run: pnpm licenses:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Action script tests
+        run: node --test "action/test/*.test.mjs"
+
+      - name: Build
+        run: pnpm build
+
+      # Compares generated Typst with fixtures/golden/*.typ; with typst and pdftotext present it also
+      # compiles the fixtures and asserts the PDF text. Update goldens with UPDATE_GOLDEN=1 pnpm test:golden.
+      - name: Install pdftotext (poppler-utils)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Golden render tests
+        run: pnpm test:golden
+
+      - name: Frontmatter JSON Schema is up to date
+        run: |
+          pnpm schema
+          git diff --exit-code -- schema/ || {
+            echo "::error::schema/ is out of date. Run 'pnpm build && pnpm schema' and commit the result."
+            exit 1
+          }
+
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+          ./actionlint -color

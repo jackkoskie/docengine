@@ -1,0 +1,3 @@
+::warning file=documents/operations/departure-release.md,line=1,col=1::Provision [200.01(2)] existed in the previous version; repeal it with a tombstone instead of deleting it
+::error file=documents/operations/departure-release.md,line=20,col=1::Subsection 200.01(3) is out of sequence; expected [200.01(2)]
+1 document(s), 1 error(s), 1 warning(s)

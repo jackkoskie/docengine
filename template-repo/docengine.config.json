@@ -1,0 +1,11 @@
+{
+  "branding": {
+    "firName": "Your Flight Information Region",
+    "footer": "Your FIR Policy Library"
+  },
+  "levels": ["Section", "Subsection", "Paragraph", "Subparagraph"],
+  "extensions": {
+    "required": "boolean",
+    "public?": "boolean"
+  }
+}

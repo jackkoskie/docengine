@@ -1,0 +1,64 @@
+# Reusable workflow: on push to main, create one GitHub Release per changed non-draft document.
+# Tag: <group>/<short>/v<version>. Assets: PDF, manifest-entry.json, upload-sheet.md.
+# Idempotent: documents whose tag already exists are skipped.
+name: docengine release
+
+on:
+  workflow_call:
+    inputs:
+      engine-repository:
+        type: string
+        required: true
+      engine-ref:
+        type: string
+        required: true
+      working-directory:
+        type: string
+        default: "."
+      typst-version:
+        type: string
+        default: "0.15.1"
+      node-version:
+        type: string
+        default: "22"
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Create releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # create tags and releases
+      pull-requests: read # link the merged PR
+    concurrency:
+      group: docengine-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.engine-repository }}
+          ref: ${{ inputs.engine-ref }}
+          path: .docengine-action
+          sparse-checkout: action
+          persist-credentials: false
+
+      - name: Keep the action checkout out of git status
+        shell: bash
+        run: echo ".docengine-action/" >> .git/info/exclude
+
+      - name: Release changed documents
+        uses: ./.docengine-action/action
+        with:
+          mode: release
+          working-directory: ${{ inputs.working-directory }}
+          typst-version: ${{ inputs.typst-version }}
+          node-version: ${{ inputs.node-version }}
+          github-token: ${{ github.token }}

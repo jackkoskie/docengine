@@ -1,0 +1,46 @@
+# Reusable workflow: weekly prune of pr-<n>/ folders whose PR is no longer open.
+name: docengine PR preview (prune)
+
+on:
+  workflow_call:
+    inputs:
+      engine-repository:
+        type: string
+        required: true
+      engine-ref:
+        type: string
+        required: true
+      previews-branch:
+        type: string
+        default: previews
+
+permissions:
+  contents: read
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # delete files on the previews branch
+      pull-requests: read # list open PRs
+    concurrency:
+      group: docengine-prune
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.engine-repository }}
+          ref: ${{ inputs.engine-ref }}
+          path: .docengine-action
+          sparse-checkout: action
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Prune
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEWS_BRANCH: ${{ inputs.previews-branch }}
+        run: node .docengine-action/action/scripts/main.mjs preview-prune

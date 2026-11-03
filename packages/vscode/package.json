@@ -3,7 +3,7 @@
   "private": true,
   "displayName": "docengine",
   "description": "Authoring support for docengine policy documents: diagnostics, completion, hover, navigation, rename and PDF preview.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "your-publisher-id",
   "license": "MPL-2.0",
   "repository": { "type": "git", "url": "https://github.com/jackkoskie/docengine.git", "directory": "packages/vscode" },

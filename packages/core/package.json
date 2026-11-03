@@ -1,6 +1,6 @@
 {
   "name": "@jackkoskie/docengine-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pure parser, validator, Typst generator and manifest builder for docengine.",
   "type": "module",
   "license": "MPL-2.0",

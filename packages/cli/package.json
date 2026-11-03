@@ -1,6 +1,6 @@
 {
   "name": "@jackkoskie/docengine",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Docs-as-code engine: Markdown with bracketed provision IDs to Typst PDFs and a JSON manifest.",
   "type": "module",
   "license": "MPL-2.0",

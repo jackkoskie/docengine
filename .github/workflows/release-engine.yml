@@ -1,4 +1,4 @@
-# Manual engine release. Configure npm and Marketplace access before publishing.
+# Manual engine release. Configure npm trusted publishers before publishing.
 name: Release engine (manual)
 
 on:
@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write # GitHub Release
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing and provenance
     steps:
       - uses: actions/checkout@v4
 
@@ -34,9 +34,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
+
+      - name: Install npm with trusted publishing support
+        run: npm install --global npm@11.7.0
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
@@ -55,15 +57,27 @@ jobs:
             if [ "$v" != "$VERSION" ]; then echo "::error file=$f::version $v does not match $VERSION"; exit 1; fi
           done
 
+      - name: Pack npm packages
+        run: |
+          mkdir -p "$RUNNER_TEMP/docengine-packages"
+          pnpm --filter @jackkoskie/docengine-core pack --pack-destination "$RUNNER_TEMP/docengine-packages"
+          pnpm --filter @jackkoskie/docengine pack --pack-destination "$RUNNER_TEMP/docengine-packages"
+
       - name: Publish to npm
         if: inputs.publish-npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # only needed for engine releases, never for docs repos
-        run: pnpm -r publish --access public --provenance --no-git-checks
+          VERSION: ${{ inputs.version }}
+        run: |
+          npm publish "$RUNNER_TEMP/docengine-packages/jackkoskie-docengine-core-${VERSION}.tgz" --access public
+          npm publish "$RUNNER_TEMP/docengine-packages/jackkoskie-docengine-${VERSION}.tgz" --access public
 
       - name: Dry-run publish
         if: ${{ !inputs.publish-npm }}
-        run: pnpm -r publish --dry-run --no-git-checks
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          npm publish "$RUNNER_TEMP/docengine-packages/jackkoskie-docengine-core-${VERSION}.tgz" --access public --dry-run
+          npm publish "$RUNNER_TEMP/docengine-packages/jackkoskie-docengine-${VERSION}.tgz" --access public --dry-run
 
       - name: Build .vsix
         id: vsix

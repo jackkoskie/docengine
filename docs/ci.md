@@ -153,7 +153,7 @@ It is idempotent. Existing tags are skipped. A draft left behind by an interrupt
 | Preview prune | `schedule` | `contents: write`, `pull-requests: read` | none |
 | Release | `push` to `main` | `contents: write` (tags, releases), `pull-requests: read` | none |
 
-Everything uses the automatic `GITHUB_TOKEN`. No repository secrets are needed for normal operation. In Settings, Actions, General, workflow permissions can stay on the read-only default because each job requests what it needs. If the repo disallows "Allow GitHub Actions to create and approve pull requests" that is fine, nothing here creates PRs. Only the engine's manual release stub uses a secret (`NPM_TOKEN`), and only when publishing to npm.
+Everything uses the automatic `GITHUB_TOKEN`. No repository secrets are needed for normal operation. In Settings, Actions, General, workflow permissions can stay on the read-only default because each job requests what it needs. If the repo disallows "Allow GitHub Actions to create and approve pull requests" that is fine, nothing here creates PRs. The engine's manual release workflow uses npm trusted publishing (OIDC), configured separately for each npm package, rather than an npm token.
 
 ## Branch protection for `main`
 
@@ -178,7 +178,7 @@ Squash merging is recommended so one PR is one commit on `main`.
 
 `ci.yml` on push and PR: `pnpm install --frozen-lockfile`, install pinned Typst, `typecheck`, `test`, `node --test action/test/*.test.mjs`, `build`, golden render tests (`pnpm test:golden`: generated Typst compared with `fixtures/golden/*.typ`, plus PDF text checks when `typst` and `pdftotext` are installed; refresh with `UPDATE_GOLDEN=1 pnpm test:golden`), a check that `schema/` is up to date (`pnpm schema` then `git diff --exit-code -- schema/`), and `actionlint`.
 
-`release-engine.yml` is manual (`workflow_dispatch`) and does nothing until triggered. It checks that package versions match the requested version, runs typecheck, tests and build, then either dry-runs or runs `pnpm -r publish --provenance` (needs `NPM_TOKEN`), builds the `.vsix` only if `packages/vscode/package.json` exists, and optionally creates a GitHub Release with the `.vsix` attached.
+`release-engine.yml` is manual (`workflow_dispatch`) and does nothing until triggered. It checks that package versions match the requested version, runs typecheck, tests and build, packs the npm packages, and either dry-runs or publishes them using npm trusted publishing. Configure GitHub Actions as a trusted publisher for each package, using owner `jackkoskie`, repository `docengine`, and workflow filename `release-engine.yml`; allow direct publishing. The workflow also builds the `.vsix` if `packages/vscode/package.json` exists, and can optionally create a GitHub Release with it attached. Configure the actual Marketplace publisher ID before distributing the VSIX.
 
 ## Linting and testing
 
